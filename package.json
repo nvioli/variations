@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "buildjs": "node_modules/.bin/webpack && npm run test",
+    "buildjs": "node_modules/.bin/webpack -d && npm run test",
     "buildhtml": "cp src/index.html dist/",
     "build": "npm run buildjs & npm run buildhtml",
     "watchjs": "node_modules/.bin/npm-watch buildjs",
@@ -16,11 +16,21 @@
   },
   "watch": {
     "buildhtml": {
-      "patterns": ["src"],
+      "patterns": [
+        "src"
+      ],
       "extensions": "html"
     },
     "buildjs": {
-      "patterns": ["src"],
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js"
+    },
+    "test": {
+      "patterns": [
+        "test"
+      ],
       "extensions": "js"
     }
   },
@@ -40,5 +50,8 @@
     "npm-watch": "^0.1.9",
     "reload": "^1.1.5",
     "webpack": "^2.6.1"
+  },
+  "dependencies": {
+    "p5": "^0.5.11"
   }
 }
