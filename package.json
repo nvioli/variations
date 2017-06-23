@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "buildjs": "node_modules/.bin/webpack -d && npm run test",
+    "buildjs": "node_modules/.bin/webpack && npm run test",
     "buildhtml": "cp src/index.html dist/",
     "build": "npm run buildjs & npm run buildhtml",
     "watchjs": "node_modules/.bin/npm-watch buildjs",
