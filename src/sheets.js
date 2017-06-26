@@ -6,21 +6,21 @@ let insturments = Object.keys(library.samples);
 utils.shuffle(insturments);
 
 const pointSheet = {};
-pointSheet[insturments[0]] = geom.getPoint(68.8859067754834,29.5557868214931,4);
-pointSheet[insturments[1]] = geom.getPoint(84.9756257873692,76.4556060689051,4);
-pointSheet[insturments[2]] = geom.getPoint(95.7769622610506,36.8187544503478,3);
-pointSheet[insturments[3]] = geom.getPoint(34.1951032480692,91.0226214602618,2);
-pointSheet[insturments[4]] = geom.getPoint(76.1516130799145,62.6088623541655,2);
-pointSheet[insturments[5]] = geom.getPoint(17.9547570794764,19.2090704935093,2);
-pointSheet[insturments[6]] = geom.getPoint(56.6385495974147,16.8127293640795,2);
-pointSheet[insturments[7]] = geom.getPoint(45.1498055540341,9.73873035000274,1);
-pointSheet[insturments[8]] = geom.getPoint(85.8876047543408,10.3467163279838,1);
-pointSheet[insturments[9]] = geom.getPoint(58.9582078107027,32.4834310127622,1);
-pointSheet[insturments[10]] = geom.getPoint(12.0967300213617,35.4138138796078,1);
-pointSheet[insturments[11]] = geom.getPoint(30.848441693597,57.6655529385989,1);
-pointSheet[insturments[12]] = geom.getPoint(40.7377992003067,59.8318453196034,1);
-pointSheet[insturments[13]] = geom.getPoint(57.3588212740319,84.2909568932464,1);
-pointSheet[insturments[14]] = geom.getPoint(86.763980938818,45.6838472914499,1);
+pointSheet[insturments[0]] = {point: geom.getPoint(68.8859067754834,29.5557868214931,4)};
+pointSheet[insturments[1]] = {point: geom.getPoint(84.9756257873692,76.4556060689051,4)};
+pointSheet[insturments[2]] = {point: geom.getPoint(95.7769622610506,36.8187544503478,3)};
+pointSheet[insturments[3]] = {point: geom.getPoint(34.1951032480692,91.0226214602618,2)};
+pointSheet[insturments[4]] = {point: geom.getPoint(76.1516130799145,62.6088623541655,2)};
+pointSheet[insturments[5]] = {point: geom.getPoint(17.9547570794764,19.2090704935093,2)};
+pointSheet[insturments[6]] = {point: geom.getPoint(56.6385495974147,16.8127293640795,2)};
+pointSheet[insturments[7]] = {point: geom.getPoint(45.1498055540341,9.73873035000274,1)};
+pointSheet[insturments[8]] = {point: geom.getPoint(85.8876047543408,10.3467163279838,1)};
+pointSheet[insturments[9]] = {point: geom.getPoint(58.9582078107027,32.4834310127622,1)};
+pointSheet[insturments[10]] = {point: geom.getPoint(12.0967300213617,35.4138138796078,1)};
+pointSheet[insturments[11]] = {point: geom.getPoint(30.848441693597,57.6655529385989,1)};
+pointSheet[insturments[12]] = {point: geom.getPoint(40.7377992003067,59.8318453196034,1)};
+pointSheet[insturments[13]] = {point: geom.getPoint(57.3588212740319,84.2909568932464,1)};
+pointSheet[insturments[14]] = {point: geom.getPoint(86.763980938818,45.6838472914499,1)};
 
 const lineSheets = [
   [

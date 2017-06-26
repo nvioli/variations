@@ -1,5 +1,5 @@
 // heavily based on https://teropa.info/blog/2016/07/28/javascript-systems-music.html#building-a-simple-sampler
-const SAMPLE_LIBRARY = require('./library.js');
+const LIBRARY = require('./library.js');
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 // let audioContext = new AudioContext();
@@ -22,8 +22,8 @@ function getNoteDistance(note1, octave1, note2, octave2) {
   return noteToValue(note1, octave1) - noteToValue(note2, octave2);
 }
 
-function getNearestSample(sampleBank, insturment, note, octave) {
-  let sortedBank = sampleBank[insturment].slice().sort((sampleA, sampleB) => {
+function getNearestSample(insturment, note, octave) {
+  let sortedBank = LIBRARY.samples[insturment].slice().sort((sampleA, sampleB) => {
     let distanceToA =
       Math.abs(getNoteDistance(note, octave, sampleA.note, sampleA.octave));
     let distanceToB =
@@ -33,8 +33,8 @@ function getNearestSample(sampleBank, insturment, note, octave) {
   return sortedBank[0];
 }
 
-function getSampleRange(sampleBank, insturment) {
-  let sortedBank = sampleBank[insturment].slice().sort((sampleA, sampleB) => getNoteDistance(sampleA.note,sampleA.octave,sampleB.note,sampleB.octave));
+function getSampleRange(insturment) {
+  let sortedBank = LIBRARY.samples[insturment].slice().sort((sampleA, sampleB) => getNoteDistance(sampleA.note,sampleA.octave,sampleB.note,sampleB.octave));
   return [sortedBank[0],sortedBank[sortedBank.length - 1]];
 }
 
@@ -53,8 +53,7 @@ function getSample(instrument, noteAndOctave) {
   let [, requestedNote, requestedOctave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
   requestedOctave = parseInt(requestedOctave, 10);
   requestedNote = flatToSharp(requestedNote);
-  let sampleBank = SAMPLE_LIBRARY.samples[instrument];
-  let sample = getNearestSample(sampleBank, requestedNote, requestedOctave);
+  let sample = getNearestSample(requestedNote, requestedOctave);
   let distance =
     getNoteDistance(requestedNote, requestedOctave, sample.note, sample.octave);
   return fetchSample(sample.file).then(audioBuffer => ({
@@ -87,3 +86,4 @@ exports.getSampleRange = getSampleRange;
 exports.getNoteDistance = getNoteDistance;
 exports.valueToNote = valueToNote;
 exports.noteToValue = noteToValue;
+exports.getNearestSample = getNearestSample;

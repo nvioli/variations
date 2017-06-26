@@ -6,7 +6,7 @@ describe('sampler', () => {
   const library = require('../src/library.js');
   describe('#getSampleRange', () => {
     it('should return an array containing the lowest and highest sampled notes', () => {
-      const celliSampleRange = sampler.getSampleRange(library.samples,"Celli");
+      const celliSampleRange = sampler.getSampleRange("Celli");
       assert.equal(celliSampleRange[0].note,"C")
       assert.equal(celliSampleRange[0].octave,2)
       assert.equal(celliSampleRange[1].note,"C")
