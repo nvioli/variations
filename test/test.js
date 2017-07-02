@@ -1,30 +1,38 @@
+"use strict";
+
 let assert = require('assert');
 let geom = require('../src/geometry.js');
-let sampler = require('../src/sampler.js');
 
-describe('sampler', () => {
-  const library = require('../src/library.js');
+let audioUtils = require('../src/audioUtils.js');
+
+describe('audioUtils', () => {
   describe('#getSampleRange', () => {
     it('should return an array containing the lowest and highest sampled notes', () => {
-      const celliSampleRange = sampler.getSampleRange("Celli");
-      assert.equal(celliSampleRange[0].note,"C")
-      assert.equal(celliSampleRange[0].octave,2)
-      assert.equal(celliSampleRange[1].note,"C")
-      assert.equal(celliSampleRange[1].octave,5)
+      const celliSampleRange = audioUtils.getSampleRange("Celli");
+      assert.equal(celliSampleRange[0].pitch,"C");
+      assert.equal(celliSampleRange[0].octave,2);
+      assert.equal(celliSampleRange[1].pitch,"C");
+      assert.equal(celliSampleRange[1].octave,5);
     });
   });
 
   describe('#valueToNote', () => {
     it('should return the note for a given numeric value', () => {
-      assert.equal(sampler.valueToNote(0).note,"C");
-      assert.equal(sampler.valueToNote(0).octave,"1");
-      assert.equal(sampler.valueToNote(12).note,"C");
-      assert.equal(sampler.valueToNote(12).octave,"2");
-      assert.equal(sampler.valueToNote(19).note,"G");
-      assert.equal(sampler.valueToNote(19).octave,"2");
+      assert.equal(audioUtils.valueToNote(12).pitch,"C");
+      assert.equal(audioUtils.valueToNote(12).octave,"1");
+      assert.equal(audioUtils.valueToNote(19).pitch,"G");
+      assert.equal(audioUtils.valueToNote(19).octave,"1");
     });
-  })
-})
+  });
+
+  describe('#getOvertone', () => {
+    it('should return the interval of a given overtone', () => {
+      assert.deepEqual(audioUtils.getOvertone({pitch: "C",octave: 3},1),{pitch: "C",octave: 4});
+      assert.deepEqual(audioUtils.getOvertone({pitch: "C",octave: 3},2),{pitch: "G",octave: 4});
+      assert.deepEqual(audioUtils.getOvertone({pitch: "C",octave: 3},3),{pitch: "C",octave: 5});
+    });
+  });
+});
 
 describe('geometry', () => {
   let p1 = geom.getPoint(2,3);

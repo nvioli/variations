@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "buildjs": "node_modules/.bin/webpack && npm run test",
-    "buildhtml": "cp src/index.html dist/ && cp -r Samples dist/",
+    "buildjs": "node_modules/.bin/webpack && npm run testjs; exit 0;",
+    "buildhtml": "cp src/*.html dist/ && cp -r Samples dist/",
     "build": "npm run buildjs & npm run buildhtml",
     "watchjs": "node_modules/.bin/npm-watch buildjs",
     "watchhtml": "node_modules/.bin/npm-watch buildhtml",
     "watch": "npm run watchjs & npm run watchhtml",
     "server": "node_modules/.bin/reload -d dist/ -b",
-    "dev": "npm run build & npm run watch & npm test & npm run server",
-    "test": "node_modules/.bin/mocha"
+    "dev": "npm run build & npm run testjs & npm run watch & npm run server",
+    "testjs": "node_modules/.bin/mocha; exit 0;"
   },
   "watch": {
     "buildhtml": {
@@ -27,7 +27,7 @@
       ],
       "extensions": "js"
     },
-    "test": {
+    "testjs": {
       "patterns": [
         "test"
       ],

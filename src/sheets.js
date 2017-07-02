@@ -24,7 +24,7 @@ pointSheet[insturments[14]] = {point: geom.getPoint(86.763980938818,45.683847291
 
 const lineSheets = [
   [
-    [geom.getPoint(0,37.2330444106872),geom.getPoint(100.,51.5347153963006)],
+    [geom.getPoint(0,37.2330444106872),geom.getPoint(100,51.5347153963006)],
     [geom.getPoint(43.0632630410655,0),geom.getPoint(37.7500177108178,100)],
     [geom.getPoint(66.3494462417645,0),geom.getPoint(44.277044418731,100)],
     [geom.getPoint(100,17.6235367706192),geom.getPoint(36.4063570028574,100)],
