@@ -1,9 +1,9 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   entry: {
     index: './src/index.js',
-    audiotest: './src/audiotest.js',
+    audiotest: './src/audiotest.js'
   },
   output: {
     filename: '[name].js',

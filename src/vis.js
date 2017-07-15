@@ -1,95 +1,110 @@
 const P5 = require('p5');
 const colors = require('./colors.js');
 const audio = require('./audio.js');
+const text = require('./text.js');
 
 require('../node_modules/p5/lib/addons/p5.sound.js');
 require('../node_modules/p5/lib/addons/p5.dom.js');
 
-let introStep = 0;
+let introStep = -1 * text.intro.length;
 let p5;
 let score;
 
 function init(theScore) {
   score = theScore;
-  new P5(sketch);
+  new P5(sketch,'container');
 }
 
 function sketch(thep5) {
   p5 = thep5;
 
-  p5.preload = () => {
-    audio.preloadScore(p5,score);
-  };
-
   p5.setup = () => {
-    p5.createCanvas(getDim(),getDim());
+    resize();
+
+    p5.createCanvas();
     p5.noLoop();
     p5.colorMode("hsb");
-    resizeTextDiv();
+
+    audio.preloadScore(p5,score);
+
+    setupEventHandlers();
+    // lazy way to fix sizing problems due to FOIT from font loading:
+    setTimeout(resize,500);
   };
 
-  p5.windowResized = () => {
-    p5.resizeCanvas(getDim(),getDim());
-    resizeTextDiv();
-  };
+  p5.windowResized = resize;
 
   p5.draw = draw;
 
-  // used in the init phase
+  // used in the intro phase
   p5.mouseClicked = () => {
-    if (introStep >= 0) {
-      introStep++;
-      p5.redraw();
-    }
+    introStep++;
+    p5.redraw();
   };
 }
 
 function getDim() {
-  return Math.min(p5.windowWidth / 2,p5.windowHeight);
+  const maxHeight = p5.windowHeight - p5.select('header').height - p5.select('footer').height;
+  return Math.min(p5.select('#container').width / 2,maxHeight);
 }
 
-function resizeTextDiv() {
+function resize() {
   p5.select('#text').size(getDim(),getDim())
-    .style('font-size',getDim() / 20)
+    .style('font-size',getDim() / 22)
     .style('padding',getDim() / 20);
+  p5.resizeCanvas(getDim(),getDim());
+}
+
+function setupEventHandlers() {
+  p5.select('#skipText').elt.addEventListener(
+    'click',
+    () => {
+      // we really want zero, but the mouseClicked handler also fires and increments.
+      introStep = Math.max(introStep,-1);
+    },
+    false
+  );
+
+  p5.select('#skipIntro').elt.addEventListener(
+    'click',
+    () => {
+      introStep = Math.max(introStep,Object.keys(score).length - 1);
+    },
+    false
+  );
 }
 
 function draw() {
   p5.background(colors.background);
-
-  if (introStep === -1) {
+  if (introStep > Object.keys(score).length + 1) {
     drawActiveNotes();
+  } else if (introStep < 0) {
+    textIntro();
   } else if (introStep < Object.keys(score).length) {
-    intro();
+    noteIntro();
   } else if (introStep === Object.keys(score).length) {
-    introStep = -1;
-    audio.playScore(p5,score,drawActiveNotes);
+    readyToPlay();
+  } else {
+    introStep++;
     p5.loop();
+    console.log("playing")
+    audio.playScore(p5,score);
+    setTimeout(
+      () => {
+        p5.noLoop();
+        drawAllNotes();
+      },
+      audio.getScoreDuration(score) * 1000
+    );
   }
 }
 
-function intro() {
-  const insturment = Object.keys(score)[introStep];
-
-  let textStr = `${insturment} to play:`;
-
-  let noteNum = 0;
-  score[insturment].notes.forEach(note => {
-    audio.playNote(note,noteNum++);
-    textStr +=
-      `<br/>  * <span style="color:${colors.lowestFreq}">${note.pitch}${note.octave}</span>
-      at <span style="color:${colors.amplitude}">${(note.amplitude * 100).toFixed(0)}%</span>
-      for <span style="color:${colors.duration}">${note.duration}s</span>
-      starting at <span style="color:${colors.occurence}">${note.delay.toFixed(2)}s</span>.`;
-          // + ' and ' + noteInfo.overtone.distance
-        //   ' for ' + noteInfo.duration.distance
-    drawNote(insturment,note,true);
+function textIntro() {
+  p5.loadImage(text.getIntroImage(introStep),img => {
+    p5.image(img,0,0,getDim(),getDim());
   });
 
-  drawInsturment(insturment);
-
-  // add text describing the notes we built
-  p5.select('#text').html(textStr);
+  p5.select('#text').html(text.getIntroText(introStep));
 }
 
 function normalize(v) {
@@ -100,51 +115,93 @@ function drawLine(p1,p2) {
   p5.line(normalize(p1.x),normalize(p1.y),normalize(p2.x),normalize(p2.y));
 }
 
-function drawInsturment(insturment) {
-  const point = score[insturment].point;
-  // draw the point
-  p5.stroke(colors.foreground).fill(colors.foreground).strokeWeight(point.size * 4);
-  p5.ellipse(normalize(point.x),normalize(point.y),point.size * 4);
+function drawLines(note) {
+  Object.keys(note.lines).forEach(noteAttribute => {
+    p5.stroke(colors.foreground).strokeWeight(1);
+    drawLine(note.lines[noteAttribute].end1,note.lines[noteAttribute].end2);
+  });
 }
 
-function drawNote(insturment,note,isIntro) {
-  const point = score[insturment].point;
+function drawNote(instrument,note,attrColors,liveUpdate) {
   Object.keys(note.lines).forEach(noteAttribute => {
-    if (isIntro) {
-      // draw the line
-      p5.stroke(colors.foreground).strokeWeight(1);
-      drawLine(note.lines[noteAttribute].end1,note.lines[noteAttribute].end2);
+    if (attrColors) {
       p5.stroke(colors[noteAttribute]);
-      p5.strokeWeight(note.amplitude * 20);
     } else {
-      p5.stroke(audio.getNoteHueValue(p5,note),100,100,note.amplitude);
+      p5.stroke(colors.getNoteHueValue(note),100,100,note.amplitude);
+    }
+    if (liveUpdate) {
       p5.strokeWeight(note.curAmplitude.getLevel() * 100);
-      if (note.curAmplitude === undefined) {
-        console.log(note);
-      }
+    } else {
+      p5.strokeWeight(note.amplitude * 20);
     }
     // and drop a perpindicular from the point
-    drawLine(point,note.lines[noteAttribute].intersection);
+    drawLine(score[instrument].point,note.lines[noteAttribute].intersection);
+  });
+}
+
+function noteIntro() {
+  p5.stroke(colors.foreground).fill(colors.foreground);
+  // draw the point sheet
+  Object.keys(score).forEach(instrument => {
+    const point = score[instrument].point;
+    p5.strokeWeight(point.size * 4);
+    p5.ellipse(normalize(point.x),normalize(point.y),point.size * 4);
+  });
+
+  const instrument = Object.keys(score)[introStep];
+
+  let textStr = `<div style="text-align:center">${instrument} (instrument ${introStep + 1}
+    of ${Object.keys(score).length}) to ${instrument.includes("Chorus") ? "sing" : "play"}:
+    </div>
+  `;
+
+  let delay = 0;
+  score[instrument].notes.forEach(note => {
+    audio.playNoteAndOvertones(note,delay);
+    delay += note.duration;
+    textStr += text.getNoteIntroText(note);
+    drawNote(instrument,note,true,false);
+    drawLines(note);
+  });
+
+  // add text describing the notes we built
+  p5.select('#text').html(textStr);
+}
+
+function readyToPlay() {
+  p5.select('#text').html(text.readyToPlay(score));
+  drawAllNotes();
+}
+
+function drawAllNotes() {
+  Object.keys(score).forEach(instrument => {
+    score[instrument].notes.forEach(note => {
+      drawNote(instrument,note,false,false);
+    });
   });
 }
 
 function drawActiveNotes() {
-  let text = "";
-  Object.keys(score).forEach(insturment => {
-    score[insturment].notes.forEach(note => {
+  let activeNoteText = "";
+  Object.keys(score).forEach(instrument => {
+    const curNotes = new Set();
+    score[instrument].notes.forEach(note => {
       if (note.isActive) {
-        text +=
-          `<span style='color:hsl(${audio.getNoteHueValue(p5,note)},100%,50%)'>
-            ${insturment}${insturment.includes("Chorus") ? " singing " : " playing "}
-            ${note.pitch}${note.octave}
-            for ${note.duration}s
-            at ${(note.amplitude * 100).toFixed(0)}%.
-          </span><br/>`;
-        drawNote(insturment,note,false);
+        curNotes.add(note);
+        drawNote(instrument,note,false,true);
       }
+      note.overtones.forEach(overtone => {
+        if (overtone.isActive) {
+          curNotes.add(note);
+          drawNote(instrument,overtone,false,true);
+        }
+      });
+    });
+    curNotes.forEach(note => {
+      activeNoteText += text.getActiveNoteText(instrument,note);
     });
   });
-  p5.select('#text').html(text);
+  p5.select('#text').html(activeNoteText);
 }
 
 exports.init = init;

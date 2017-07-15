@@ -1,9 +1,11 @@
 // https://stackoverflow.com/a/2450976/1712343
 exports.shuffle = array => {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length;
+  let temporaryValue;
+  let randomIndex;
 
   // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
 
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
@@ -14,6 +16,4 @@ exports.shuffle = array => {
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = temporaryValue;
   }
-
-  return array;
-}
+};

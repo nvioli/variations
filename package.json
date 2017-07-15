@@ -5,21 +5,21 @@
   "main": "index.js",
   "scripts": {
     "buildjs": "node_modules/.bin/webpack && npm run testjs; exit 0;",
-    "buildhtml": "cp src/*.html dist/ && cp -r Samples dist/",
-    "build": "npm run buildjs & npm run buildhtml",
+    "buildstatic": "cp src/static/* dist/ && cp -r Samples dist/",
+    "build": "npm run buildjs & npm run buildstatic",
     "watchjs": "node_modules/.bin/npm-watch buildjs",
-    "watchhtml": "node_modules/.bin/npm-watch buildhtml",
+    "watchhtml": "node_modules/.bin/npm-watch buildstatic",
     "watch": "npm run watchjs & npm run watchhtml",
     "server": "node_modules/.bin/reload -d dist/ -b",
     "dev": "npm run build & npm run testjs & npm run watch & npm run server",
     "testjs": "node_modules/.bin/mocha; exit 0;"
   },
   "watch": {
-    "buildhtml": {
+    "buildstatic": {
       "patterns": [
-        "src"
+        "src/static"
       ],
-      "extensions": "html"
+      "extensions": "*"
     },
     "buildjs": {
       "patterns": [

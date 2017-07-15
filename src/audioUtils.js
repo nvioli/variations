@@ -15,8 +15,8 @@ function getNoteDistance(note1, note2) {
   return noteToValue(note1) - noteToValue(note2);
 }
 
-function getNearestSample(insturment, note) {
-  let sortedBank = LIBRARY.samples[insturment].slice().sort((sampleA, sampleB) => {
+function getNearestSample(instrument, note) {
+  let sortedBank = LIBRARY.samples[instrument].slice().sort((sampleA, sampleB) => {
     let distanceToA =
       Math.abs(getNoteDistance(note, sampleA));
     let distanceToB =
@@ -26,8 +26,8 @@ function getNearestSample(insturment, note) {
   return sortedBank[0];
 }
 
-function getSampleRange(insturment) {
-  let sortedBank = LIBRARY.samples[insturment].slice().sort(
+function getSampleRange(instrument) {
+  let sortedBank = LIBRARY.samples[instrument].slice().sort(
     (sampleA, sampleB) => getNoteDistance(sampleA,sampleB)
   );
   return [sortedBank[0],sortedBank[sortedBank.length - 1]];

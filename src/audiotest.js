@@ -24,11 +24,11 @@ function sketch(p5) {
   p5.setup = () => {
     p5.noLoop();
 
-    Object.keys(library.samples).forEach(insturment => {
+    Object.keys(library.samples).forEach(instrument => {
       const opt = document.createElement('option');
-      opt.value = insturment;
-      opt.innerHTML = insturment;
-      document.getElementById('insturments').appendChild(opt);
+      opt.value = instrument;
+      opt.innerHTML = instrument;
+      document.getElementById('instruments').appendChild(opt);
     });
 
     document.getElementById('playScale').addEventListener(
@@ -47,12 +47,12 @@ function sketch(p5) {
 
 function preloadAndPlayScale(p5) {
   let notesLoaded = 0;
-  const insturment = document.getElementById('insturments').value;
+  const instrument = document.getElementById('instruments').value;
   const octave = document.getElementById('octave').value;
 
   scale.forEach(note => {
     note.octave = octave;
-    audio.preloadNote(p5,insturment,note,() => {
+    audio.preloadNote(p5,instrument,note,() => {
       if (++notesLoaded === scale.length) {
         playScale();
       }
@@ -71,17 +71,17 @@ function playScale() {
 }
 
 function preloadAndPlayOvertone(p5) {
-  const insturment = document.getElementById('insturments').value;
+  const instrument = document.getElementById('instruments').value;
   const pitch = document.getElementById('pitch').value;
   const octave = document.getElementById('octave').value;
   const overtoneNumber = document.getElementById('overtone').value;
 
-  const note = {pitch, octave};
+  const note = {pitch, octave, duration: 1, amplitude: 1};
   const overtone = audioUtils.getOvertone(note,overtoneNumber);
   document.getElementById('overtoneInfo').innerHTML = overtoneNumber + nth(overtoneNumber) + " overtone of " + note.pitch + note.octave + " is " + overtone.pitch + overtone.octave;
 
-  audio.preloadNote(p5,insturment,note,() => audio.playNote(note));
-  // audio.preloadNote(p5,insturment,overtone,() => audio.playNote(overtone,1));
+  audio.preloadNote(p5,instrument,note,() => audio.playNote(note));
+  // audio.preloadNote(p5,instrument,overtone,() => audio.playNote(overtone,1));
 }
 
 function nth(d) {
