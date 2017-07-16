@@ -10,6 +10,17 @@ let introStep = -1 * text.intro.length;
 let p5;
 let score;
 
+const introImgPaths = [
+  "score.jpg",
+  "transparency.jpg",
+  "cage.jpg",
+  "transparency.jpg",
+  "example.png",
+  "example.png"
+];
+
+const preloadedImgs = [];
+
 function init(theScore) {
   score = theScore;
   new P5(sketch,'container');
@@ -17,6 +28,8 @@ function init(theScore) {
 
 function sketch(thep5) {
   p5 = thep5;
+
+  p5.preload = preloadImgs;
 
   p5.setup = () => {
     resize();
@@ -27,7 +40,6 @@ function sketch(thep5) {
 
     audio.preloadScore(p5,score);
 
-    setupEventHandlers();
     // lazy way to fix sizing problems due to FOIT from font loading:
     setTimeout(resize,500);
   };
@@ -43,6 +55,14 @@ function sketch(thep5) {
   };
 }
 
+function preloadImgs() {
+  introImgPaths.forEach((path,idx) => {
+    p5.loadImage(path,preloadedImg => {
+      preloadedImgs[idx] = preloadedImg;
+    });
+  });
+}
+
 function getDim() {
   const maxHeight = p5.windowHeight - p5.select('header').height - p5.select('footer').height;
   return Math.min(p5.select('#container').width / 2,maxHeight);
@@ -56,7 +76,9 @@ function resize() {
 }
 
 function setupEventHandlers() {
-  p5.select('#skipText').elt.addEventListener(
+  const skipTextElt = p5.select('#skipText').elt;
+  skipTextElt.innerHTML = "Skip intro text";
+  skipTextElt.addEventListener(
     'click',
     () => {
       // we really want zero, but the mouseClicked handler also fires and increments.
@@ -65,7 +87,9 @@ function setupEventHandlers() {
     false
   );
 
-  p5.select('#skipIntro').elt.addEventListener(
+  const skipNotesElt = p5.select('#skipNotes').elt;
+  skipNotesElt.innerHTML = "Skip note calculations";
+  skipNotesElt.addEventListener(
     'click',
     () => {
       introStep = Math.max(introStep,Object.keys(score).length - 1);
@@ -73,11 +97,13 @@ function setupEventHandlers() {
     false
   );
 }
-
+let done = false;
 function draw() {
   p5.background(colors.background);
-  if (introStep > Object.keys(score).length + 1) {
-    drawActiveNotes();
+  if (done) {
+    showFinishedState();
+  } else if (introStep > Object.keys(score).length + 1) {
+    drawLiveScore();
   } else if (introStep < 0) {
     textIntro();
   } else if (introStep < Object.keys(score).length) {
@@ -87,22 +113,24 @@ function draw() {
   } else {
     introStep++;
     p5.loop();
-    console.log("playing")
-    audio.playScore(p5,score);
-    setTimeout(
-      () => {
-        p5.noLoop();
-        drawAllNotes();
-      },
-      audio.getScoreDuration(score) * 1000
-    );
+    startScore();
   }
 }
 
+function startScore() {
+  audio.playScore(p5,score);
+  setTimeout(
+    () => {
+      done = true;
+      p5.noLoop();
+    },
+    audio.getScoreDuration(score) * 1000
+  );
+}
+
 function textIntro() {
-  p5.loadImage(text.getIntroImage(introStep),img => {
-    p5.image(img,0,0,getDim(),getDim());
-  });
+  const introIndex = introStep + preloadedImgs.length;
+  p5.image(preloadedImgs[introIndex],0,0,getDim(),getDim());
 
   p5.select('#text').html(text.getIntroText(introStep));
 }
@@ -152,7 +180,7 @@ function noteIntro() {
 
   let textStr = `<div style="text-align:center">${instrument} (instrument ${introStep + 1}
     of ${Object.keys(score).length}) to ${instrument.includes("Chorus") ? "sing" : "play"}:
-    </div>
+    </div><ul>
   `;
 
   let delay = 0;
@@ -164,16 +192,18 @@ function noteIntro() {
     drawLines(note);
   });
 
+  textStr += `</ul>${text.clickToContinue}`;
+
   // add text describing the notes we built
   p5.select('#text').html(textStr);
 }
 
 function readyToPlay() {
   p5.select('#text').html(text.readyToPlay(score));
-  drawAllNotes();
 }
 
-function drawAllNotes() {
+function showFinishedState() {
+  p5.select('#text').html(text.finished());
   Object.keys(score).forEach(instrument => {
     score[instrument].notes.forEach(note => {
       drawNote(instrument,note,false,false);
@@ -181,27 +211,34 @@ function drawAllNotes() {
   });
 }
 
-function drawActiveNotes() {
+function drawLiveScore() {
   let activeNoteText = "";
   Object.keys(score).forEach(instrument => {
-    const curNotes = new Set();
+    const notesNeedingText = new Set();
     score[instrument].notes.forEach(note => {
       if (note.isActive) {
-        curNotes.add(note);
+        notesNeedingText.add(note);
         drawNote(instrument,note,false,true);
       }
       note.overtones.forEach(overtone => {
         if (overtone.isActive) {
-          curNotes.add(note);
+          notesNeedingText.add(note);
           drawNote(instrument,overtone,false,true);
         }
       });
     });
-    curNotes.forEach(note => {
+    notesNeedingText.forEach(note => {
       activeNoteText += text.getActiveNoteText(instrument,note);
     });
   });
+  addTimeline();
   p5.select('#text').html(activeNoteText);
 }
 
+function addTimeline() {
+  p5.stroke(colors.timeLineColor).strokeWeight(4);
+  drawLine({x: 0, y: 99.5},{x: audio.getPercentDone(score),y: 99.5});
+}
+
 exports.init = init;
+exports.setupEventHandlers = setupEventHandlers;

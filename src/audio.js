@@ -1,7 +1,10 @@
 const P5 = require('p5');
 const audioUtils = require('./audioUtils.js');
+const vis = require('./vis.js');
 
 require('../node_modules/p5/lib/addons/p5.sound.js');
+
+let startTime;
 
 function getNoteFromDistance(instrument,dist) {
   const [lowestNote,highestNote] = audioUtils.getSampleRange(instrument);
@@ -17,6 +20,8 @@ function getNoteFromDistance(instrument,dist) {
   return audioUtils.valueToNote(returnVal);
 }
 
+let notesToLoad = 0;
+
 function preloadNote(p5,instrument,note,cb) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
@@ -24,6 +29,8 @@ function preloadNote(p5,instrument,note,cb) {
   note.sample = p5.loadSound(nearestSample.file, cb);
 
   note.sample.playMode('restart');
+
+  notesToLoad++;
 }
 
 function preloadScore(p5,score) {
@@ -38,30 +45,6 @@ function preloadScore(p5,score) {
   });
 }
 
-function getScoreDuration(score) {
-  let maxDelay = 0;
-  Object.keys(score).forEach(instrument => {
-    score[instrument].notes.forEach(note => {
-      if (note.delay > maxDelay) {
-        maxDelay = note.delay;
-      }
-    });
-  });
-  return maxDelay * 2;
-}
-
-function getMinDelay(score) {
-  let minDelay = 100;
-  Object.keys(score).forEach(instrument => {
-    score[instrument].notes.forEach(note => {
-      if (note.delay < minDelay) {
-        minDelay = note.delay;
-      }
-    });
-  });
-  return minDelay;
-}
-
 function setupNote(note) {
   note.duration = Math.min(note.duration,note.sample.duration() * 1 / note.pitchAdjust);
 
@@ -72,6 +55,11 @@ function setupNote(note) {
   const amp = new P5.Amplitude();
   amp.setInput(note.sample);
   note.curAmplitude = amp;
+
+  notesToLoad--;
+  if (notesToLoad === 0) {
+    vis.setupEventHandlers();
+  }
 }
 
 function playNoteAndOvertones(note,delay,rate) {
@@ -102,7 +90,7 @@ function playNote(note,delay,rate) {
       note.isActive = false;
     },
     (delay + note.duration) * 1000
-  );
+    );
 }
 
 function playScore(p5,score) {
@@ -123,12 +111,25 @@ function playScore(p5,score) {
           // remove the parts in the reverse order they were added
           playPart.removePhrase(instrument + note.pitch + note.octave + note.amplitude);
         },
-        (score.duration - note.delay) * 1000
+        (getScoreDuration(score) - note.delay) * 1000
       );
     });
   });
 
+  startTime = new Date();
   playPart.start();
+}
+
+function getScoreDuration(score) {
+  let maxDelay = 0;
+  Object.keys(score).forEach(instrument => {
+    score[instrument].notes.forEach(note => {
+      if (note.delay > maxDelay) {
+        maxDelay = note.delay;
+      }
+    });
+  });
+  return maxDelay * 2;
 }
 
 function getPhrase(instrument,note,pattern) {
@@ -141,6 +142,14 @@ function getPhrase(instrument,note,pattern) {
   );
 }
 
+function getPercentDone(score) {
+  if (startTime === undefined) {
+    return 0;
+  }
+  const now = new Date();
+  return 100 * (now.getTime() - startTime.getTime()) / 1000 / getScoreDuration(score);
+}
+
 exports.getNoteFromDistance = getNoteFromDistance;
 exports.preloadNote = preloadNote;
 exports.preloadScore = preloadScore;
@@ -149,4 +158,4 @@ exports.playScore = playScore;
 exports.playNoteAndOvertones = playNoteAndOvertones;
 exports.getOvertone = audioUtils.getOvertone;
 exports.getScoreDuration = getScoreDuration;
-exports.getMinDelay = getMinDelay;
+exports.getPercentDone = getPercentDone;

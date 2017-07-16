@@ -9,6 +9,8 @@ exports.occurence = 'purple';
 exports.foreground = '#828282';
 exports.background = '#332d2d';
 
+exports.timeLineColor = 'orange';
+
 function getNoteHueValue(note) {
   // utility for converting a note to a color (hue) value.
   // using the below code, I determined that the lowest sampled note has a value of 10,

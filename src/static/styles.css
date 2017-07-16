@@ -32,3 +32,6 @@ p {
 .secondary {
   color:orange;
 }
+ul {
+  padding-left: 15px;
+}
