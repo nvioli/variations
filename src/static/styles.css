@@ -26,6 +26,9 @@ canvas {
 p {
   margin-top: 0;
 }
+a {
+  color: lightskyblue;
+}
 .small {
   font-size: 0.65em;
 }

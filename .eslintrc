@@ -35,6 +35,7 @@
 
   "globals": {
     // e.g. "angular": true
+    "ga": true
   },
 
   "plugins": [

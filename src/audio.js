@@ -90,7 +90,7 @@ function playNote(note,delay,rate) {
       note.isActive = false;
     },
     (delay + note.duration) * 1000
-    );
+  );
 }
 
 function playScore(p5,score) {
@@ -99,9 +99,21 @@ function playScore(p5,score) {
   playPart.loop();
   playPart.setBPM(10);
 
+  const zeroPattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  let noteOffset = 0;
+
   Object.keys(score).forEach(instrument => {
     score[instrument].notes.forEach(note => {
-      playPart.addPhrase(getPhrase(instrument,note,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]));
+      const pattern = zeroPattern.slice();
+      pattern[noteOffset % 16] = 1;
+      console.log("adding " + getPhraseName(instrument,note) + " at offset " + noteOffset % 16);
+      setTimeout(
+        () => {
+          playPart.addPhrase(getPhrase(instrument,note,pattern));
+        },
+        note.delay * 1000
+      );
+      noteOffset++;
     });
   });
   Object.keys(score).forEach(instrument => {
@@ -109,7 +121,7 @@ function playScore(p5,score) {
       setTimeout(
         () => {
           // remove the parts in the reverse order they were added
-          playPart.removePhrase(instrument + note.pitch + note.octave + note.amplitude);
+          playPart.removePhrase(getPhraseName(instrument,note));
         },
         (getScoreDuration(score) - note.delay) * 1000
       );
@@ -118,6 +130,20 @@ function playScore(p5,score) {
 
   startTime = new Date();
   playPart.start();
+}
+
+function getPhrase(instrument,note,pattern) {
+  return new P5.Phrase(
+    getPhraseName(instrument,note),
+    (time,rate) => {
+      playNoteAndOvertones(note,time,rate);
+    },
+    pattern
+  );
+}
+
+function getPhraseName(instrument,note) {
+  return instrument + note.pitch + note.octave + note.amplitude;
 }
 
 function getScoreDuration(score) {
@@ -130,16 +156,6 @@ function getScoreDuration(score) {
     });
   });
   return maxDelay * 2;
-}
-
-function getPhrase(instrument,note,pattern) {
-  return new P5.Phrase(
-    instrument + note.pitch + note.octave + note.amplitude,
-    (time,rate) => {
-      playNoteAndOvertones(note,time + note.delay,rate);
-    },
-    pattern
-  );
 }
 
 function getPercentDone(score) {

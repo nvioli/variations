@@ -2,7 +2,7 @@ const audioUtils = require('./audioUtils.js');
 
 exports.lowestFreq = 'red';
 exports.overtone = 'green';
-exports.amplitude = 'blue';
+exports.amplitude = 'lightskyblue';
 exports.duration = 'orange';
 exports.occurence = 'purple';
 

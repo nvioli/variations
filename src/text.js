@@ -2,14 +2,17 @@ const colors = require('./colors.js');
 const audio = require('./audio.js');
 
 const intro = [
+  // 0
   `
     <p>In 1958, John Cage wrote the piece <em>Variations I</em>, an early
-    example of aleatoric music.</p>
-    <p>In this style of nondeterministic composition, the composer sets up a
-    system of rules which determine the parameters of the piece.</p>
-    <p>The parts the musicians play are determined by chance, usually at the
-    time the piece is performed--not chosen beforehand by the composer.</p>
+    example of aleatoric (or "chance") music.</p>
+    <p>In this style of composition, the composer sets up a
+    system of rules which determine the parameters of the piece. The rules are
+    implemented using a random process.</p>
+    <p>Therefore, the parts the musicians play are determined by chance,
+    not chosen beforehand by the composer.</p>
   `,
+  // 1
   `
     <p>In <em>Variations I</em>, musicians are instructed to overlay a
     transparency containing dots with one or more transparencies containing
@@ -17,49 +20,49 @@ const intro = [
     <p>By measuring the distances from the dots to the lines, the musicians
     determine the pitch, volume, duration, first occurrence, and overtone
     structure they are to play.</p>
+    <p>I wrote this program to create unique performances of Cage's piece.</p>
   `,
+  // 2
   `
+    <p>This program will randomly choose an ensemble, and use Cage's
+    rules to determine what notes it will play.</p>
     <p>Because of the labor involved in calculating the piece's parameters,
-    Cage could only have imagined that a small fraction of the near-limitless
-    possible performances encoded in the piece's system would ever be performed.</p>
-    <p>But by implementing the system on a computer, this website can (theoretically)
-    generate all of them (well, all that include the available instruments).</p>
+    Cage could only have imagined that a small fraction of the
+    possible performances would ever be played.</p>
+    <p>Using this program, a new performance is generated
+    each time it is loaded, with you as the only audience who will ever hear it!</p>
   `,
+  // 3
   `
-    <p>After this introduction, a new piece will be generated and then played.</p>
-    <p>First, each dot will be assigned an instrument, the distances from
-    the dot to the various lines will be measured, and the notes' parameters
-    will be calculated from those measurements.</p>
-    <p>After all that has been done, the generated piece will play in full.</p>
-  `,
-  `
-    <p>Here's how we'll calculate the piece's parameters:</p>
-    <p>Each dot, one at a time, will be assigned an instrument. Some dots
+    <p>Here's how the program will calculate the piece's parameters:</p>
+    <p>Each dot will be assigned an instrument. Some dots
     (the bigger ones) play more than one note.</p>
-    <p>For each note the instrument will play, we select a random transparency,
-    choose a line to represent each parameter of the note, and measure to
-    calculate the parameter.</p>
+    <p>For each note the instrument will play, the program selects one of the four
+    transparencies. Each line corresponds to a parameter of the note. The program
+    measures the distance from the dot to the line to calculate the parameter.</p>
   `,
+  // 4
   `
-    <p>In the example at the right there are two notes:
+    <p>In the example at the right there are two notes. Each note has five parameters
+    (volume, pitch, length, overtone structure, first occurrence).
       <ul>
-        <li style="font-weight:600">a
-          <span style="color:${colors.amplitude}">loud</span>,
+        <li style="font-weight:600">One note is
+          <span style="color:${colors.amplitude}">louder</span>,
           <span style="color:${colors.lowestFreq}">lower</span>,
-          <span style="color:${colors.duration}">shorter</span> one with
-          <span style="color:${colors.overtone}">one overtone</span>, which starts
-          <span style="color:${colors.occurence}">later</span>
+          <span style="color:${colors.duration}">longer</span>, has
+          <span style="color:${colors.overtone}">no overtones</span>, and starts
+          <span style="color:${colors.occurence}">very early</span>.
         </li>
-        <li style="font-weight:100">and a
-          <span style="color:${colors.amplitude}">very soft</span>,
+        <li style="font-weight:200">The other note is
+          <span style="color:${colors.amplitude}">softer</span>,
           <span style="color:${colors.lowestFreq}">higher</span>,
-          <span style="color:${colors.duration}">longer</span> one with
-          <span style="color:${colors.overtone}">no overtones</span>, which starts
-          <span style="color:${colors.occurence}">earlier</span>
+          <span style="color:${colors.duration}">shorter</span> has
+          <span style="color:${colors.overtone}">one overtone</span>, and starts
+          <span style="color:${colors.occurence}">later</span>.
         </li>
       </ul>
     </p>
-    <p>Got it? Click one more time to create a unique piece</p>
+    <p>Got it? (It's ok if you don't.) Click one more time to create a unique piece.</p>
   `
 ];
 
@@ -72,7 +75,7 @@ function getIntroText(introStep) {
       Introduction ${introIndex + 1} of ${intro.length}
     </strong></div>
     ${intro[introIndex]}
-    ${clickToContinue}`;
+    ${introIndex < intro.length - 1 ? clickToContinue : ""}`;
 }
 
 function getNoteIntroText(note) {
@@ -115,10 +118,9 @@ function readyToPlay(score) {
   return `<div style="text-align:center"><strong>Ready to play!</strong></div>
     <p>Now that everything is set up, you're ready to hear your piece!</p>
     <p>Your piece is ${getLength(score)} long.</p>
-    <p>We'll switch the color scheme up a bit: now each note will be colored
-    according to its pitch (lower notes closer to the red end of the spectrum,
-    and higher notes closer to violet).</p>
-    <p>Click one more time to hear your creation!</p>`;
+    <p>Each note will be colored according to its pitch (lower notes closer to
+    the red end of the spectrum, and higher notes closer to violet).</p>
+    <p class="secondary">Click one more time to hear the creation built just for you!</p>`;
 }
 
 function getLength(score) {
@@ -135,7 +137,8 @@ function finished() {
     <p>This project was built using <a href="https://p5js.org/">p5.js</a>, and
     was inspired by
     <a href="https://teropa.info/blog/2016/07/28/javascript-systems-music.html">Javascript
-    Systems Music</a> by <a href="https://teropa.info/">Tero Parviainen</a></p>
+    Systems Music</a> by <a href="https://teropa.info/">Tero Parviainen</a>.</p>
+    <p>The code is available on <a href="https://github.com/nvioli/variations">github</a>.</p>
     <p>To create another piece,
     <a href="javascript:void(0)" onclick="location.reload();">refresh the page</a>.
     Note the links below to skip the introductory material.</p>

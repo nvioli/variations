@@ -14,12 +14,12 @@ const introImgPaths = [
   "score.jpg",
   "transparency.jpg",
   "cage.jpg",
-  "transparency.jpg",
   "example.png",
   "example.png"
 ];
 
 const preloadedImgs = [];
+let readyToPlayImg;
 
 function init(theScore) {
   score = theScore;
@@ -61,6 +61,9 @@ function preloadImgs() {
       preloadedImgs[idx] = preloadedImg;
     });
   });
+  p5.loadImage("cage2.jpg",img => {
+    readyToPlayImg = img;
+  });
 }
 
 function getDim() {
@@ -101,16 +104,21 @@ let done = false;
 function draw() {
   p5.background(colors.background);
   if (done) {
+    ga('send', 'event', 'johnCage', 'finished');
     showFinishedState();
   } else if (introStep > Object.keys(score).length + 1) {
     drawLiveScore();
   } else if (introStep < 0) {
+    ga('send', 'event', 'johnCage', 'textIntro');
     textIntro();
   } else if (introStep < Object.keys(score).length) {
+    ga('send', 'event', 'johnCage', 'noteIntro');
     noteIntro();
   } else if (introStep === Object.keys(score).length) {
+    ga('send', 'event', 'johnCage', 'readyToPlay');
     readyToPlay();
   } else {
+    ga('send', 'event', 'johnCage', 'started');
     introStep++;
     p5.loop();
     startScore();
@@ -169,13 +177,6 @@ function drawNote(instrument,note,attrColors,liveUpdate) {
 
 function noteIntro() {
   p5.stroke(colors.foreground).fill(colors.foreground);
-  // draw the point sheet
-  Object.keys(score).forEach(instrument => {
-    const point = score[instrument].point;
-    p5.strokeWeight(point.size * 4);
-    p5.ellipse(normalize(point.x),normalize(point.y),point.size * 4);
-  });
-
   const instrument = Object.keys(score)[introStep];
 
   let textStr = `<div style="text-align:center">${instrument} (instrument ${introStep + 1}
@@ -192,14 +193,30 @@ function noteIntro() {
     drawLines(note);
   });
 
-  textStr += `</ul>${text.clickToContinue}`;
+  textStr += `</ul>`;
 
   // add text describing the notes we built
   p5.select('#text').html(textStr);
+
+  // draw the point sheet
+  Object.keys(score).forEach(inst => {
+    const point = score[inst].point;
+    p5.strokeWeight(point.size * 4);
+    p5.ellipse(normalize(point.x),normalize(point.y),point.size * 4);
+  });
+
+  setTimeout(
+    () => {
+      introStep++;
+      p5.redraw();
+    },
+    (delay + 1) * 1000
+  );
 }
 
 function readyToPlay() {
   p5.select('#text').html(text.readyToPlay(score));
+  p5.image(readyToPlayImg,0,0,getDim(),getDim());
 }
 
 function showFinishedState() {
