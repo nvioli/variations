@@ -7,9 +7,9 @@ const audio = require('./audio.js');
 // The score object will hold all the information we generate about the various instruments' parts.
 // {
 //   "Cello": {
-//     //added in the sheets module:
-//     point: {x: 50, y: 50},
-//     //added in the index module:
+//     // added in the sheets module:
+//     point: {x: 50, y: 50, size: 2},
+//     // added in the index module:
 //     notes: [
 //       {
 //         lines: {
@@ -21,7 +21,18 @@ const audio = require('./audio.js');
 //         pitch: C,
 //         octave: 3,
 //         delay: 15.5,
-//         amplitude: 32.222
+//         amplitude: 32.222,
+//         overtones: [
+//           // overtones have all the same keys as the parent notes (except their own overtones)
+//         ]
+//         // added in the index module, then adjusted in the audio module
+//         duration: 1.5,
+//
+//         // added in the audio module (setupNote and preloadNote functions):
+//         pitchAdjust:  1.05,
+//         sample:       P5 SoundFile object,
+//         curAmplitude: P5 Amplitude object,
+//         envelope:     P5 Env object
 //       },
 //       ...
 //     ],

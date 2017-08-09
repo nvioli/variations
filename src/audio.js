@@ -2,8 +2,6 @@ const P5 = require('p5');
 const audioUtils = require('./audioUtils.js');
 const vis = require('./vis.js');
 
-require('../node_modules/p5/lib/addons/p5.sound.js');
-
 let startTime;
 
 function getNoteFromDistance(instrument,dist) {
@@ -26,23 +24,12 @@ function preloadNote(p5,instrument,note,cb) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
 
-  note.sample = p5.loadSound(nearestSample.file, cb);
+  note.sample = p5.loadSound(nearestSample.file, () => {
+    setupNote(note);
+    cb();
+  });
 
   note.sample.playMode('restart');
-
-  notesToLoad++;
-}
-
-function preloadScore(p5,score) {
-  Object.keys(score).forEach(instrument => {
-    score[instrument].notes.forEach(note => {
-      preloadNote(p5,instrument,note,() => setupNote(note));
-
-      note.overtones.forEach(overtone => {
-        preloadNote(p5,instrument,overtone,() => setupNote(overtone));
-      });
-    });
-  });
 }
 
 function setupNote(note) {
@@ -55,7 +42,22 @@ function setupNote(note) {
   const amp = new P5.Amplitude();
   amp.setInput(note.sample);
   note.curAmplitude = amp;
+}
 
+function preloadScore(p5,score) {
+  Object.keys(score).forEach(instrument => {
+    score[instrument].notes.forEach(note => {
+      notesToLoad++;
+      preloadNote(p5,instrument,note,setupVisIfComplete);
+
+      note.overtones.forEach(overtone => {
+        preloadNote(p5,instrument,overtone,setupVisIfComplete);
+      });
+    });
+  });
+}
+
+function setupVisIfComplete() {
   notesToLoad--;
   if (notesToLoad === 0) {
     vis.setupEventHandlers();
@@ -171,6 +173,7 @@ exports.preloadNote = preloadNote;
 exports.preloadScore = preloadScore;
 exports.setupNote = setupNote;
 exports.playScore = playScore;
+exports.playNote = playNote;
 exports.playNoteAndOvertones = playNoteAndOvertones;
 exports.getOvertone = audioUtils.getOvertone;
 exports.getScoreDuration = getScoreDuration;

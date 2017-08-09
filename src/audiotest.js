@@ -5,21 +5,6 @@ const library = require('./library.js');
 
 require('../node_modules/p5/lib/addons/p5.sound.js');
 
-const scale = [
-  {pitch: 'C'},
-  {pitch: 'C#'},
-  {pitch: 'D'},
-  {pitch: 'D#'},
-  {pitch: 'E'},
-  {pitch: 'F'},
-  {pitch: 'F#'},
-  {pitch: 'G'},
-  {pitch: 'G#'},
-  {pitch: 'A'},
-  {pitch: 'A#'},
-  {pitch: 'B'}
-];
-
 function sketch(p5) {
   p5.setup = () => {
     p5.noLoop();
@@ -47,22 +32,31 @@ function sketch(p5) {
 
 function preloadAndPlayScale(p5) {
   let notesLoaded = 0;
+  const scale = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
   const instrument = document.getElementById('instruments').value;
   const octave = document.getElementById('octave').value;
 
-  scale.forEach(note => {
+  const scaleWithNoteDetails = [];
+  scale.forEach(pitch => {
+    const note = {};
+    note.pitch = pitch;
     note.octave = octave;
+    note.duration = 1;
+    note.amplitude = 50;
+
+    scaleWithNoteDetails.push(note);
     audio.preloadNote(p5,instrument,note,() => {
       if (++notesLoaded === scale.length) {
-        playScale();
+        playScale(scaleWithNoteDetails);
       }
     });
   });
 }
 
-function playScale() {
+function playScale(scaleWithNoteDetails) {
   let noteNum = 0;
-  scale.forEach(note => {
+  scaleWithNoteDetails.forEach(note => {
     setTimeout(() => {
       document.getElementById('scaleInfo').innerHTML = note.pitch + note.octave;
     },noteNum * 1000);
@@ -78,7 +72,9 @@ function preloadAndPlayOvertone(p5) {
 
   const note = {pitch, octave, duration: 1, amplitude: 1};
   const overtone = audioUtils.getOvertone(note,overtoneNumber);
-  document.getElementById('overtoneInfo').innerHTML = overtoneNumber + nth(overtoneNumber) + " overtone of " + note.pitch + note.octave + " is " + overtone.pitch + overtone.octave;
+  document.getElementById('overtoneInfo').innerHTML =
+    `${overtoneNumber}${nth(overtoneNumber)} overtone of ${note.pitch}${note.octave}
+    is ${overtone.pitch}${overtone.octave}`;
 
   audio.preloadNote(p5,instrument,note,() => audio.playNote(note));
   // audio.preloadNote(p5,instrument,overtone,() => audio.playNote(overtone,1));
