@@ -100,22 +100,19 @@ function setupEventHandlers() {
     false
   );
 }
+
 let done = false;
 function draw() {
   p5.background(colors.background);
   if (done) {
-    ga('send', 'event', 'johnCage', 'finished');
     showFinishedState();
   } else if (introStep > Object.keys(score).length + 1) {
     drawLiveScore();
   } else if (introStep < 0) {
-    ga('send', 'event', 'johnCage', 'textIntro');
     textIntro();
   } else if (introStep < Object.keys(score).length) {
-    ga('send', 'event', 'johnCage', 'noteIntro');
     noteIntro();
   } else if (introStep === Object.keys(score).length) {
-    ga('send', 'event', 'johnCage', 'readyToPlay');
     readyToPlay();
   } else {
     ga('send', 'event', 'johnCage', 'started');
@@ -137,6 +134,7 @@ function startScore() {
 }
 
 function textIntro() {
+  ga('send', 'event', 'johnCage', 'textIntro');
   const introIndex = introStep + preloadedImgs.length;
   p5.image(preloadedImgs[introIndex],0,0,getDim(),getDim());
 
@@ -176,6 +174,7 @@ function drawNote(instrument,note,attrColors,liveUpdate) {
 }
 
 function noteIntro() {
+  ga('send', 'event', 'johnCage', 'noteIntro');
   p5.stroke(colors.foreground).fill(colors.foreground);
   const instrument = Object.keys(score)[introStep];
 
@@ -215,11 +214,13 @@ function noteIntro() {
 }
 
 function readyToPlay() {
+  ga('send', 'event', 'johnCage', 'readyToPlay');
   p5.select('#text').html(text.readyToPlay(score));
   p5.image(readyToPlayImg,0,0,getDim(),getDim());
 }
 
 function showFinishedState() {
+  ga('send', 'event', 'johnCage', 'finished');
   p5.select('#text').html(text.finished());
   Object.keys(score).forEach(instrument => {
     score[instrument].notes.forEach(note => {

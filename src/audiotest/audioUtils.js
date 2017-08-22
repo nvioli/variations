@@ -17,20 +17,11 @@ function getNoteDistance(note1, note2) {
 
 function getNearestSample(instrument, note) {
   let sortedBank = LIBRARY.samples[instrument].slice().sort((sampleA, sampleB) => {
-    let distanceToA =
-      Math.abs(getNoteDistance(note, sampleA));
-    let distanceToB =
-      Math.abs(getNoteDistance(note, sampleB));
+    let distanceToA = Math.abs(getNoteDistance(note, sampleA));
+    let distanceToB = Math.abs(getNoteDistance(note, sampleB));
     return distanceToA - distanceToB;
   });
   return sortedBank[0];
-}
-
-function getSampleRange(instrument) {
-  let sortedBank = LIBRARY.samples[instrument].slice().sort(
-    (sampleA, sampleB) => getNoteDistance(sampleA,sampleB)
-  );
-  return [sortedBank[0],sortedBank[sortedBank.length - 1]];
 }
 
 function getOvertone(note,overtone) {
@@ -47,6 +38,5 @@ exports.noteToValue = noteToValue;
 exports.valueToNote = valueToNote;
 exports.getNoteDistance = getNoteDistance;
 exports.getNearestSample = getNearestSample;
-exports.getSampleRange = getSampleRange;
 exports.getOvertone = getOvertone;
 exports.getPlaybackRate = getPlaybackRate;

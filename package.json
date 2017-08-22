@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "buildjs": "node_modules/.bin/webpack && npm run testjs; exit 0;",
-    "buildstatic": "cp src/static/* dist/ && cp -r Samples dist/",
+    "buildstatic": "cp -r src/static/* dist/ && cp -r Samples dist/",
     "build": "npm run buildjs & npm run buildstatic",
     "watchjs": "node_modules/.bin/npm-watch buildjs",
     "watchhtml": "node_modules/.bin/npm-watch buildstatic",

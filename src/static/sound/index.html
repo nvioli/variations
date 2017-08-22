@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <title>make some noise</title>
+    <script language="javascript" type="text/javascript" src="p5.min.js"></script>
+    <script language="javascript" type="text/javascript" src="p5.sound.min.js"></script>
+
+    <script language="javascript" type="text/javascript" src="sketch.js"></script>
+
+    <style type="text/css">
+      body{margin:0;}
+      canvas{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      #topRight{
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        text-align: right;
+        font-size: 4em;
+      }
+      @media screen and (min-width: 35.5em) {
+        #topRight {
+          font-size: 2.5em;
+        }
+      }
+      @media screen and (min-width: 64em) {
+        #topRight {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topRight">
+      <label for="toggleCtrl">ctrl</label>
+      <input type="checkbox" id="toggleCtrl" onchange="document.getElementById('ctrl').style.display = this.checked ? 'block' : 'none'"/>
+      <div id="ctrl" style="display:none;">
+        <hr/>
+        # of circles:
+        <input type="range" min="0" max="4" step="1" id="circleCount" value="4" onchange="updateInputs()">
+        <br/>
+        circle size: 
+        <input type="range" min="5" max="100" step="5" id="circleSize" value="10" onchange="updateInputs()">
+        <br/>
+        background: 
+        <input type="range" min="1" max="255" step="1" id="bg" value="40" onchange="updateInputs()">
+        <br/>
+        color: 
+        <input type="range" min="0" max="255" step="5" id="color1" value="50" onchange="updateInputs()">
+        <br/>
+        <label for="cleanUp">clean up?</label>
+        <input type="checkbox" id="cleanUp" checked="checked" onchange="updateInputs()">
+      </div>
+    </div>
+  </body>
+</html>
