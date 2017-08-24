@@ -42,7 +42,7 @@ function sketch(thep5) {
 }
 
 function getDim() {
-  return Math.min(p5.select('#container').width / 2,p5.windowHeight);
+  return Math.min(p5.windowWidth / 2,p5.windowHeight);
 }
 
 function resize() {

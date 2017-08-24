@@ -33,12 +33,6 @@ function getSampleRange(instrument) {
   return [sortedBank[0],sortedBank[sortedBank.length - 1]];
 }
 
-function getOvertone(note,overtone) {
-  const overtoneInterval = Math.round(Math.log(1 * overtone + 1) / Math.log(Math.pow(2,1 / 12)));
-  const overtoneValue = noteToValue(note) + overtoneInterval;
-  return valueToNote(overtoneValue);
-}
-
 function getPlaybackRate(noteDistance) {
   return Math.pow(2, noteDistance / 12);
 }
@@ -48,5 +42,4 @@ exports.valueToNote = valueToNote;
 exports.getNoteDistance = getNoteDistance;
 exports.getNearestSample = getNearestSample;
 exports.getSampleRange = getSampleRange;
-exports.getOvertone = getOvertone;
 exports.getPlaybackRate = getPlaybackRate;

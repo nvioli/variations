@@ -73,4 +73,3 @@ exports.preloadNote = preloadNote;
 exports.preloadScore = preloadScore;
 exports.setupNote = setupNote;
 exports.playNote = playNote;
-exports.getOvertone = audioUtils.getOvertone;
