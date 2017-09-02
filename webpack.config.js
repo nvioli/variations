@@ -5,6 +5,7 @@ module.exports = {
     index: './src/index.js',
     audiotest: './src/audiotest/index.js',
     drawnotes: './src/drawnotes/index.js',
+    background: './src/background/index.js',
     repeat: './src/repeat/index.js'
   },
   output: {

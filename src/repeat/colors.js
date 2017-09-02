@@ -31,7 +31,7 @@ function getNoteHueValue(note) {
   // console.log(lowestSample)
   // console.log(highestSample)
   // return p5.map(audioUtils.noteToValue(note),10,96,0,360);
-  return 360 / (1 + Math.pow(Math.E,(43 - audioUtils.noteToValue(note)) / 10));
+  return 371 / (1 + Math.pow(Math.E,(56 - audioUtils.noteToValue(note)) / 10)) - 4;
 }
 
 exports.getNoteHueValue = getNoteHueValue;

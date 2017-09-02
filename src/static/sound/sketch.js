@@ -37,15 +37,15 @@ function draw(){
   for (var i = 1; i < circles; i++){
     var x = posMap[i][0];
     var y = posMap[i][1];
-    
-    sound = y*x*spectrum[i * bands / circles];
 
+    sound = y*x*spectrum[i * bands / circles];
+    console.log(sound);
     prevMax[i] = max(prevMax[i],sound);
     prevMin[i] = min(prevMin[i],sound);
 
     colorScale = map(sound,prevMin[i],prevMax[i],0,255) || 0;
     sizeScale = map(sound,prevMin[i],prevMax[i],0,width * circleSize / sqrt(circles));
-        
+
     fill(colorScale,colorScale+saturationMod,colorScale+70);
     ellipse(x, y, sizeScale / 2, sizeScale / 2);
   }
@@ -77,7 +77,7 @@ function getPosMap(){
   var ystep = height / dimn;
 
   ret[key] = [curx,cury];
-  
+
   for (var grpSize = 1; grpSize <= dimn * 2; grpSize++){
     for (var j = 0; j < grpSize; j++){
       key++;

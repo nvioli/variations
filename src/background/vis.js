@@ -14,6 +14,7 @@ function init(theScore) {
   new P5(sketch,'container');
 }
 
+let isPlaying = false;
 function sketch(thep5) {
   p5 = thep5;
 
@@ -32,16 +33,25 @@ function sketch(thep5) {
   p5.windowResized = resize;
 
   p5.draw = draw;
+
+  p5.mouseClicked = () => {
+    if (isPlaying) {
+      audio.stopScore();
+    } else {
+      startScore();
+    }
+    isPlaying = !isPlaying;
+  };
 }
 
 function getDim() {
-  return Math.min(p5.windowWidth / 2,p5.windowHeight);
+  return Math.max(p5.windowWidth,p5.windowHeight);
 }
 
 function resize() {
-  p5.select('#text').size(getDim(),getDim())
-    .style('font-size',getDim() / 22)
-    .style('padding',getDim() / 20);
+  // p5.select('#text').size(getDim(),getDim())
+  //   .style('font-size',getDim() / 22)
+  //   .style('padding',getDim() / 20);
   p5.resizeCanvas(getDim(),getDim());
 }
 
@@ -54,7 +64,7 @@ function draw() {
   } else if (started) {
     drawLiveScore();
   } else {
-    p5.select('#text').html("loading");
+    // p5.select('#text').html("loading");
   }
 }
 
@@ -116,7 +126,7 @@ function drawLiveScore() {
     });
   });
   addTimeline();
-  p5.select('#text').html(activeNoteText);
+  // p5.select('#text').html(activeNoteText);
 }
 
 function addTimeline() {

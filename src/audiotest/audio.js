@@ -1,3 +1,4 @@
+const P5 = require('p5');
 const audioUtils = require('./audioUtils.js');
 
 function preloadNote(p5,instrument,note,cb) {
@@ -6,7 +7,9 @@ function preloadNote(p5,instrument,note,cb) {
 
   note.sample = p5.loadSound(nearestSample.file, cb);
 
-  note.sample.playMode('restart');
+  const env = new P5.Env();
+  note.sample.amp(env);
+  note.envelope = env;
 }
 
 function playNote(note,delay,rate) {
