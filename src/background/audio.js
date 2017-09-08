@@ -1,6 +1,5 @@
 const P5 = require('p5');
 const audioUtils = require('./audioUtils.js');
-const vis = require('./vis.js');
 
 let startTime;
 
@@ -18,15 +17,12 @@ function getNoteFromDistance(instrument,dist) {
   return audioUtils.valueToNote(returnVal);
 }
 
-let notesToLoad = 0;
-
-function preloadNote(p5,instrument,note,cb) {
+function preloadNote(p5,instrument,note) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
 
-  note.sample = p5.loadSound(nearestSample.file, () => {
+  note.sample = p5.loadSound(audioUtils.getFullSamplePath(nearestSample), () => {
     setupNote(note);
-    cb();
   });
 
   note.sample.playMode('restart');
@@ -47,22 +43,15 @@ function setupNote(note) {
 function preloadScore(p5,score) {
   Object.keys(score).forEach(instrument => {
     score[instrument].notes.forEach(note => {
-      notesToLoad++;
-      preloadNote(p5,instrument,note,startScoreIfComplete);
+      preloadNote(p5,instrument,note);
 
       note.overtones.forEach(overtone => {
-        preloadNote(p5,instrument,overtone,startScoreIfComplete);
+        preloadNote(p5,instrument,overtone);
       });
     });
   });
 }
 
-function startScoreIfComplete() {
-  // notesToLoad--;
-  // if (notesToLoad === 0) {
-  //   vis.startScore();
-  // }
-}
 
 function playNoteAndOvertones(note,delay,rate) {
   playNote(note,delay,rate);

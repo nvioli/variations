@@ -1,0 +1,5 @@
+By default, this app accesses the audio files used to serve nvioli.github.io in order to keep the size of the repository down. If you'd like to serve the files from your local instance (or Nick has moved them off of nvioli.github.io, or github has gone out of business, or changed its CORS policy, etc.) you should download the samples from their source:
+
+http://sso.mattiaswestlund.net/download.html
+
+or elsewhere, and place them in this folder. Then simply change the `localSampleLibrary` variable to true in audioUtils.js.

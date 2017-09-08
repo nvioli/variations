@@ -19,7 +19,7 @@ function preloadNote(p5,instrument,note) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
 
-  note.sample = p5.loadSound(nearestSample.file, () => {
+  note.sample = p5.loadSound(audioUtils.getFullSamplePath(nearestSample), () => {
     setupNote(note);
   });
 

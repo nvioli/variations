@@ -24,7 +24,7 @@ function preloadNote(p5,instrument,note,cb) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
 
-  note.sample = p5.loadSound(nearestSample.file, () => {
+  note.sample = p5.loadSound(audioUtils.getFullSamplePath(nearestSample), () => {
     setupNote(note);
     cb();
   });
@@ -108,7 +108,7 @@ function playScore(p5,score) {
     score[instrument].notes.forEach(note => {
       const pattern = zeroPattern.slice();
       pattern[noteOffset % 16] = 1;
-      console.log("adding " + getPhraseName(instrument,note) + " at offset " + noteOffset % 16);
+      // console.log("adding " + getPhraseName(instrument,note) + " at offset " + noteOffset % 16);
       setTimeout(
         () => {
           playPart.addPhrase(getPhrase(instrument,note,pattern));

@@ -1,7 +1,6 @@
 const P5 = require('p5');
 const colors = require('./colors.js');
 const audio = require('./audio.js');
-const text = require('./text.js');
 
 require('../../node_modules/p5/lib/addons/p5.sound.js');
 require('../../node_modules/p5/lib/addons/p5.dom.js');
@@ -49,9 +48,6 @@ function getDim() {
 }
 
 function resize() {
-  // p5.select('#text').size(getDim(),getDim())
-  //   .style('font-size',getDim() / 22)
-  //   .style('padding',getDim() / 20);
   p5.resizeCanvas(getDim(),getDim());
 }
 
@@ -64,7 +60,8 @@ function draw() {
   } else if (started) {
     drawLiveScore();
   } else {
-    // p5.select('#text').html("loading");
+    p5.textSize(32).fill("white");
+    p5.text("click to begin",0,0,500,500);
   }
 }
 
@@ -106,7 +103,6 @@ function drawNote(instrument,note,attrColors,liveUpdate) {
 }
 
 function drawLiveScore() {
-  let activeNoteText = "";
   Object.keys(score).forEach(instrument => {
     const notesNeedingText = new Set();
     score[instrument].notes.forEach(note => {
@@ -120,9 +116,6 @@ function drawLiveScore() {
           drawNote(instrument,overtone,false,true);
         }
       });
-    });
-    notesNeedingText.forEach(note => {
-      activeNoteText += text.getActiveNoteText(instrument,note);
     });
   });
   addTimeline();

@@ -117,12 +117,12 @@ function draw() {
   } else {
     ga('send', 'event', 'johnCage', 'started');
     introStep++;
-    p5.loop();
     startScore();
   }
 }
 
 function startScore() {
+  p5.loop();
   audio.playScore(p5,score);
   setTimeout(
     () => {

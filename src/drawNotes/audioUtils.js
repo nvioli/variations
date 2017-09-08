@@ -1,4 +1,7 @@
-// heavily based on
+// see Samples/samplesInfo.txt for information about serving the audio files yourself
+const localSampleLibrary = true;
+
+// based on
 // https://teropa.info/blog/2016/07/28/javascript-systems-music.html#building-a-simple-sampler
 const LIBRARY = require('./library.js');
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -26,6 +29,14 @@ function getNearestSample(instrument, note) {
   return sortedBank[0];
 }
 
+function getFullSamplePath(note) {
+  if (localSampleLibrary) {
+    return note.file;
+  } else {
+    return `https://nvioli.github.io/${note.file}?raw=true`;
+  }
+}
+
 function getSampleRange(instrument) {
   let sortedBank = LIBRARY.samples[instrument].slice().sort(
     (sampleA, sampleB) => getNoteDistance(sampleA,sampleB)
@@ -41,5 +52,6 @@ exports.noteToValue = noteToValue;
 exports.valueToNote = valueToNote;
 exports.getNoteDistance = getNoteDistance;
 exports.getNearestSample = getNearestSample;
+exports.getFullSamplePath = getFullSamplePath;
 exports.getSampleRange = getSampleRange;
 exports.getPlaybackRate = getPlaybackRate;

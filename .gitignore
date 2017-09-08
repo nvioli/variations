@@ -1,3 +1,4 @@
 node_modules/
-Samples/
+Samples/*
 dist/
+!Samples/samplesInfo.txt

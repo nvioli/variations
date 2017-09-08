@@ -32,8 +32,8 @@ function sketch(p5) {
   };
 
   p5.draw = () => {
-    console.log("nothing to draw");
-  }
+   //  console.log("nothing to draw");
+  };
 }
 
 new P5(sketch);
@@ -67,7 +67,8 @@ function playScale(scaleWithNoteDetails) {
 }
 
 function printInfo(note) {
-  const fileParts = note.sample.file.split('.')[0].split('-');
+  const pathParts = note.sample.file.split('/');
+  const fileParts = pathParts[pathParts.length - 1].split('.')[0].split('-');
   const closestNote = fileParts[fileParts.length - 1].replace('%23','#');
 
   document.getElementById('scaleInfo').innerHTML = `
@@ -78,11 +79,14 @@ function printInfo(note) {
 
 function preloadAndPlayOvertone(p5) {
   const instrument = document.getElementById('instruments').value;
-  const pitch = document.getElementById('pitch').value;
-  const octave = document.getElementById('octave').value;
   const overtoneNumber = document.getElementById('overtone').value;
 
-  const note = {pitch, octave, duration: 1, amplitude: 50};
+  const note = {
+    pitch: document.getElementById('pitch').value,
+    octave: document.getElementById('octave').value,
+    duration: 1,
+    amplitude: 50
+  };
   const overtone = audioUtils.getOvertone(note,overtoneNumber);
   overtone.duration = 1;
   overtone.amplitude = 50;
