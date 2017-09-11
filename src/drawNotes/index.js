@@ -29,9 +29,7 @@ Object.keys(score).forEach(instrument => {
 
 function getNoteInfo(instrument,point,sheet) {
   const lines = getLines(point,sheet);
-  const noteInfo = audio.getNoteFromDistance(instrument,lines.lowestFreq.distance);
-
-  return getNoteAttributes(noteInfo,lines);
+  return getNoteAttributes(instrument,lines);
 }
 
 function getLines(point,sheet) {
@@ -58,11 +56,12 @@ function getLineDetails(point,lineEnds) {
   };
 }
 
-function getNoteAttributes(note,lines) {
+function getNoteAttributes(instrument,lines) {
+  const noteInfo = audio.getNoteFromDistance(instrument,lines.lowestFreq.distance);
   return {
     lines,
-    pitch: note.pitch,
-    octave: note.octave,
+    pitch: noteInfo.pitch,
+    octave: noteInfo.octave,
     delay: lines.occurence.distance,
     amplitude: lines.amplitude.distance / 100,
     duration: lines.duration.distance / 10
