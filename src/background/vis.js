@@ -56,12 +56,12 @@ let started = false;
 function draw() {
   p5.background(colors.background);
   if (done) {
-    window.location.reload(false);
+    window.location.href = "/background-autostart.html";
   } else if (started) {
     drawLiveScore();
   } else {
-    p5.textSize(32).fill("white");
-    p5.text("click to begin",0,0,500,500);
+    p5.textSize(96).stroke("#fff").fill("#fff");
+    p5.text("click to begin",500,800);
   }
 }
 
