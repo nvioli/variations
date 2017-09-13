@@ -23,7 +23,7 @@ $ npm run dev
 This builds the contents of the app into the `dist` directory, starts a local webserver, and starts a watch task which will re-build the app when you change any file in the `src` directory. Visit http://localhost:8080 (or any of the pages listed above) to see the piece.
 
 ## Hosting audio files locally
-By default, the audio files are all loaded from Nick's github pages demo. If you want to serve them locally (which is much faster!), download the [sample library](http://sso.mattiaswestlund.net/download.html) and extract in to the Samples directory, then change the `localSampleLibrary` variable in each of the `audioUtils.js` files to `true`.
+By default, the audio files are all loaded from Nick's github pages demo. If you want to serve them locally (which is much faster!), download the [Sonatina Symphonic Orchestra sample library](http://sso.mattiaswestlund.net/download.html) and extract in to the Samples directory, then change the `localSampleLibrary` variable in each of the `audioUtils.js` files to `true`.
 
 # Related
 * [John Cage](http://johncage.org/)
