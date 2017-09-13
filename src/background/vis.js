@@ -36,6 +36,7 @@ function sketch(thep5) {
   p5.mouseClicked = () => {
     if (isPlaying) {
       audio.stopScore();
+      clearTimeout(restartTimeout);
     } else {
       startScore();
     }
@@ -65,10 +66,11 @@ function draw() {
   }
 }
 
+let restartTimeout;
 function startScore() {
   started = true;
   audio.playScore(p5,score);
-  setTimeout(
+  restartTimeout = setTimeout(
     () => {
       done = true;
       p5.noLoop();
