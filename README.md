@@ -13,6 +13,7 @@ There are several other versions containing pieces of the complete functionality
 | Repeat | The complete implementation without intro material; auto-refreshes | Live demo:https://nvioli.github.io/repeat.html <br/> code:https://github.com/nvioli/variations/tree/master/src/repeat/ |
 
 # Running locally
+## Building and running the local server
 ```bash
 $ git clone https://github.com/nvioli/variations.git
 $ cd variations
@@ -20,6 +21,9 @@ $ npm install
 $ npm run dev
 ```
 This builds the contents of the app into the `dist` directory, starts a local webserver, and starts a watch task which will re-build the app when you change any file in the `src` directory. Visit http://localhost:8080 (or any of the pages listed above) to see the piece.
+
+## Hosting audio files locally
+By default, the audio files are all loaded from Nick's github pages demo. If you want to serve them locally (which is much faster!), download the [sample library](http://sso.mattiaswestlund.net/download.html) and extract in to the Samples directory, then change the `localSampleLibrary` variable in each of the `audioUtils.js` files to `true`.
 
 # Related
 * [John Cage](http://johncage.org/)
