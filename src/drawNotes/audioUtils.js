@@ -1,5 +1,5 @@
 // see Samples/samplesInfo.txt for information about serving the audio files yourself
-const localSampleLibrary = true;
+const localSampleLibrary = false;
 
 // based on
 // https://teropa.info/blog/2016/07/28/javascript-systems-music.html#building-a-simple-sampler

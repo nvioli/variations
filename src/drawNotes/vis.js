@@ -17,6 +17,10 @@ function init(theScore) {
 function sketch(thep5) {
   p5 = thep5;
 
+  p5.preload = () => {
+    audio.preloadScore(p5,score);
+  };
+
   p5.setup = () => {
     // resize();
 
@@ -24,7 +28,6 @@ function sketch(thep5) {
     p5.noLoop();
     p5.colorMode("hsb");
 
-    audio.preloadScore(p5,score);
 
     // lazy way to fix sizing problems due to FOIT from font loading:
     setTimeout(resize,500);
