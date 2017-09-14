@@ -30,3 +30,4 @@ By default, the audio files are all loaded from Nick's github pages demo. If you
 * [p5.js](https://p5js.org/)
 * [Variations I on Wikipedia](https://en.wikipedia.org/wiki/Variations_(Cage))
 * Inspired by [Javascript Systems Music by Tero Parviainen](http://teropa.info/blog/2016/07/28/javascript-systems-music.html)
+* [John Cage on "I've Got a Secret"](https://www.youtube.com/watch?v=gXOIkT1-QWY) (not directly related to this piece, but one of my favorite videos of Cage)
