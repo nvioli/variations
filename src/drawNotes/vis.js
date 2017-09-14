@@ -17,13 +17,10 @@ function init(theScore) {
 function sketch(thep5) {
   p5 = thep5;
 
-  p5.preload = () => {
-    audio.preloadScore(p5,score);
-  };
-
   p5.setup = () => {
     // resize();
 
+    audio.preloadScore(p5,score);
     p5.createCanvas();
     p5.noLoop();
     p5.colorMode("hsb");
@@ -79,9 +76,7 @@ function drawNote(instrument,note) {
 }
 
 function noteIntro() {
-  if (introStep === -1) {
-    p5.select('#text').html('ready');
-  } else {
+  if (introStep !== -1) {
     p5.background(colors.background);
     p5.stroke(colors.foreground).fill(colors.foreground);
     const instrument = Object.keys(score)[introStep];

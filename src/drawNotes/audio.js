@@ -15,15 +15,24 @@ function getNoteFromDistance(instrument,dist) {
   return audioUtils.valueToNote(returnVal);
 }
 
+let notesToPreload = 0;
 function preloadNote(p5,instrument,note) {
   const nearestSample = audioUtils.getNearestSample(instrument,note);
   note.pitchAdjust = audioUtils.getPlaybackRate(audioUtils.getNoteDistance(note,nearestSample));
+  notesToPreload++;
 
   note.sample = p5.loadSound(audioUtils.getFullSamplePath(nearestSample), () => {
     setupNote(note);
+    reportIfComplete(p5);
   });
 
   note.sample.playMode('restart');
+}
+
+function reportIfComplete(p5) {
+  if (--notesToPreload === 0) {
+    p5.select('#text').html('ready');
+  }
 }
 
 function setupNote(note) {
